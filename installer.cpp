@@ -1,43 +1,48 @@
 #include <windows.h>
 #include <iostream>
 #include <thread>
-/*#pragma comment(lib, "winmm.lib") */
-/*g++ armstrong.cpp -o armstrong -lwinmm -mwindows terminal command to compile for windows*/
+/*winmm.lib library for sound playing*/
+/*compile rc file with: windres installer_admin.rc -O coff -o installer_admin.res*/
+/*g++ installer.cpp -o installer installer_admin.res -lwinmm -mwindows terminal command to compile with manifest file, with winmm.lib and no terminal window*/
 using namespace std;
 
 SERVICE_STATUS serviceStatus;
 SERVICE_STATUS_HANDLE hStatus;
 
+
 void  ServiceMain(int argc, char** argv); 
 void  ControlHandler(DWORD request); 
 char serviceName[] = "thegreyfray";
+
+
 int main() {
-        // Open a handle to the SCM database. 
+    // handle to SCM database, opened connection to the service control manager
     SC_HANDLE schSCManager = OpenSCManager( 
         NULL,                    // local computer
         NULL,                    // ServicesActive database 
         SC_MANAGER_ALL_ACCESS);  // full access rights 
 
-    if (NULL == schSCManager) {
+    if (NULL == schSCManager) { // if failed to open the handle
         printf("OpenSCManager failed (%d)\n", GetLastError());
         return 1;
     }
 
-    // Create the service
+    // Creating the service in msconfig by calling CreateService
+    // handle to SCM service creator
     SC_HANDLE schService = CreateService( 
-        schSCManager,              // SCM database 
-        "thegreyfray",               // name of service 
-        "thegreyfray",               // service name to display 
-        SERVICE_ALL_ACCESS,        // desired access 
-        SERVICE_WIN32_OWN_PROCESS, // service type 
-        SERVICE_AUTO_START,        // start type 
-        SERVICE_ERROR_NORMAL,      // error control type 
-        "D:\\thegrey\\intothefray.exe", // path to service's binary 
-        NULL,                      // no load ordering group 
-        NULL,                      // no tag identifier 
-        NULL,                      // no dependencies 
-        NULL,                      // LocalSystem account 
-        NULL);                     // no password 
+        schSCManager,              // SCManager database 
+        serviceName,               // Name of service 
+        serviceName,               // Name of display
+        SERVICE_ALL_ACCESS,        // Desired access 
+        SERVICE_WIN32_OWN_PROCESS, // Service type 
+        SERVICE_AUTO_START,        // Service start type 
+        SERVICE_ERROR_NORMAL,      // Error control type 
+        "D:\\thegrey\\intothefray.exe", // Service's binary 
+        NULL,                      // No load ordering group 
+        NULL,                      // No tag identifier 
+        NULL,                      // Dependencies 
+        NULL,                      // Service running account Null for local 
+        NULL);                     // Password of the account 
 
     if (schService == NULL) {
         printf("CreateService failed (%d)\n", GetLastError()); 
@@ -47,14 +52,17 @@ int main() {
         printf("Service installed successfully\n"); 
     }
 
+    // close handles
     CloseServiceHandle(schService); 
     CloseServiceHandle(schSCManager);
+
+    //start the service
     SERVICE_TABLE_ENTRY ServiceTable[] = {
         {serviceName, (LPSERVICE_MAIN_FUNCTION)ServiceMain},
         {NULL, NULL}
     };
 
-    // Start the control dispatcher thread for our service
+    // Start the control dispatcher thread for the service
     StartServiceCtrlDispatcher(ServiceTable);  
     return 0;
 }
@@ -65,6 +73,7 @@ int main() {
     return;
 }*/
 
+/// service main function
 void ServiceMain(int argc, char** argv) {
     serviceStatus.dwServiceType        = SERVICE_WIN32; 
     serviceStatus.dwCurrentState       = SERVICE_START_PENDING; 
@@ -79,6 +88,8 @@ void ServiceMain(int argc, char** argv) {
     SetServiceStatus (hStatus, &serviceStatus);
 }
 
+
+/// handling SCM requests stop, shutdown etc.
 void ControlHandler(DWORD request) { 
     switch(request) { 
         case SERVICE_CONTROL_STOP: 
