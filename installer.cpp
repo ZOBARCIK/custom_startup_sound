@@ -3,7 +3,8 @@
 #include <thread>
 /*winmm.lib library for sound playing*/
 /*compile rc file with: windres installer_admin.rc -O coff -o installer_admin.res*/
-/*g++ installer.cpp -o installer installer_admin.res -lwinmm -mwindows terminal command to compile with manifest file, with winmm.lib and no terminal window*/
+/*g++ installer.cpp -static -o installer installer_admin.res -lwinmm -mwindows terminal command to compile with manifest file, with winmm.lib and no terminal window*/
+/*compile statically*/
 using namespace std;
 
 SERVICE_STATUS serviceStatus;
@@ -29,6 +30,9 @@ int main() {
 
     // Creating the service in msconfig by calling CreateService
     // handle to SCM service creator
+    TCHAR audioDependency[] = TEXT("Audiosrv\0\0");
+    TCHAR serviceBinary[] = TEXT("D:\\thegrey\\intothefray.exe");
+
     SC_HANDLE schService = CreateService( 
         schSCManager,              // SCManager database 
         serviceName,               // Name of service 
@@ -37,10 +41,10 @@ int main() {
         SERVICE_WIN32_OWN_PROCESS, // Service type 
         SERVICE_AUTO_START,        // Service start type 
         SERVICE_ERROR_NORMAL,      // Error control type 
-        "D:\\thegrey\\intothefray.exe", // Service's binary 
+        serviceBinary, // Service's binary 
         NULL,                      // No load ordering group 
         NULL,                      // No tag identifier 
-        NULL,                      // Dependencies 
+        audioDependency,            // Dependencies 
         NULL,                      // Service running account Null for local 
         NULL);                     // Password of the account 
 
@@ -69,8 +73,7 @@ int main() {
 
 /*void WorkerThread() {
 
- (!PlaySound(TEXT("D:\\thegrey\\intothefray.wav"), NULL, SND_FILENAME)) ;
-    return;
+    PlaySound(TEXT("D:\\thegrey\\intothefray.wav"), NULL, SND_FILENAME);
 }*/
 
 /// service main function
@@ -84,6 +87,34 @@ void ServiceMain(int argc, char** argv) {
     serviceStatus.dwWaitHint           = 0; 
 
     hStatus = RegisterServiceCtrlHandler(serviceName, (LPHANDLER_FUNCTION)ControlHandler); 
+        
+    serviceStatus.dwCurrentState = SERVICE_START_PENDING; 
+    SetServiceStatus (hStatus, &serviceStatus);
+    thread worker([]{
+        STARTUPINFO si;
+        PROCESS_INFORMATION pi;
+
+        ZeroMemory(&si, sizeof(si));
+        si.cb = sizeof(si);
+        ZeroMemory(&pi, sizeof(pi));
+
+        CreateProcess("D:\\thegrey\\intothefray.exe",   // path to .exe file
+            NULL,        // Command line
+            NULL,           // Process handle not inheritable
+            NULL,           // Thread handle not inheritable
+            FALSE,          // Set handle inheritance to FALSE
+            0,              // No creation flags
+            NULL,           // Use parent's environment block
+            NULL,           // Use parent's starting directory 
+            &si,            // Pointer to STARTUPINFO structure
+            &pi);           // Pointer to PROCESS_INFORMATION structure
+            
+    });
+    worker.detach();
+    /*// Start the worker thread
+    thread worker(WorkerThread);
+    worker.detach();*/
+
     serviceStatus.dwCurrentState = SERVICE_RUNNING; 
     SetServiceStatus (hStatus, &serviceStatus);
 }

@@ -1,0 +1,10 @@
+E:\CloudFolder\Drive\Drive'ım\Shared Files\CS\C++\denemeler\armstrong\GUIarmstrong\bin\Debug\GUIarmstrong.exe.config
+E:\CloudFolder\Drive\Drive'ım\Shared Files\CS\C++\denemeler\armstrong\GUIarmstrong\bin\Debug\GUIarmstrong.exe
+E:\CloudFolder\Drive\Drive'ım\Shared Files\CS\C++\denemeler\armstrong\GUIarmstrong\bin\Debug\GUIarmstrong.pdb
+E:\CloudFolder\Drive\Drive'ım\Shared Files\CS\C++\denemeler\armstrong\GUIarmstrong\obj\Debug\GUIarmstrong.csproj.AssemblyReference.cache
+E:\CloudFolder\Drive\Drive'ım\Shared Files\CS\C++\denemeler\armstrong\GUIarmstrong\obj\Debug\GUIarmstrong.Properties.Resources.resources
+E:\CloudFolder\Drive\Drive'ım\Shared Files\CS\C++\denemeler\armstrong\GUIarmstrong\obj\Debug\GUIarmstrong.csproj.GenerateResource.cache
+E:\CloudFolder\Drive\Drive'ım\Shared Files\CS\C++\denemeler\armstrong\GUIarmstrong\obj\Debug\GUIarmstrong.csproj.CoreCompileInputs.cache
+E:\CloudFolder\Drive\Drive'ım\Shared Files\CS\C++\denemeler\armstrong\GUIarmstrong\obj\Debug\GUIarmstrong.exe
+E:\CloudFolder\Drive\Drive'ım\Shared Files\CS\C++\denemeler\armstrong\GUIarmstrong\obj\Debug\GUIarmstrong.pdb
+E:\CloudFolder\Drive\Drive'ım\Shared Files\CS\C++\denemeler\armstrong\GUIarmstrong\obj\Debug\GUIarmstrong.Form1.resources
